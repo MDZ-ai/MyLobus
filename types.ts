@@ -113,4 +113,5 @@ export interface AppViewProps {
   setView: (view: ViewState) => void;
   isDarkMode?: boolean;
   toggleTheme?: () => void;
+  onLogout?: () => void;
 }

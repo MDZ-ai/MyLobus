@@ -1,4 +1,4 @@
-export const playSound = (type: 'click' | 'hover' | 'success' | 'error' | 'scan' | 'pay') => {
+export const playSound = (type: 'click' | 'hover' | 'success' | 'error' | 'scan' | 'pay' | 'logout') => {
   const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioContext) return;
   
@@ -15,9 +15,9 @@ export const playSound = (type: 'click' | 'hover' | 'success' | 'error' | 'scan'
     osc.connect(gain);
     gain.connect(ctx.destination);
     
-    // Envelope for "glassy" sound (fast attack, exponential decay)
+    // Smooth envelope
     gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(vol, startTime + 0.005);
+    gain.gain.linearRampToValueAtTime(vol, startTime + (duration * 0.1));
     gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
     
     osc.start(startTime);
@@ -26,51 +26,49 @@ export const playSound = (type: 'click' | 'hover' | 'success' | 'error' | 'scan'
 
   switch (type) {
     case 'click':
-      // High pitch, short, like tapping a crystal glass
-      createOsc(1200, 'sine', now, 0.08, 0.05);
+      // Softer, woody/bubble click
+      createOsc(800, 'sine', now, 0.05, 0.1);
       break;
     case 'hover':
-      // Very subtle air puff
-      createOsc(800, 'sine', now, 0.03, 0.01);
+      // Very high, barely audible air
+      createOsc(1200, 'sine', now, 0.02, 0.02);
       break;
     case 'success':
-      // Bright major triad (C6, E6, G6)
-      createOsc(1046.50, 'sine', now, 0.4, 0.05); 
-      createOsc(1318.51, 'sine', now + 0.05, 0.4, 0.05);
-      createOsc(1567.98, 'sine', now + 0.1, 0.6, 0.05);
+      // Modern UI Success Chime (Major 7th ish)
+      createOsc(600, 'sine', now, 0.2, 0.1);
+      createOsc(900, 'sine', now + 0.05, 0.2, 0.1);
+      createOsc(1200, 'sine', now + 0.1, 0.4, 0.1);
       break;
     case 'scan':
-      // Futuristic light scanning flutter
+      // Digital Flutter
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, now);
-      osc.frequency.linearRampToValueAtTime(1500, now + 0.5);
-      
-      // Tremolo effect for flutter
-      const lfo = ctx.createOscillator();
-      lfo.frequency.value = 15;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 500;
-      lfo.connect(lfoGain.gain);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.linearRampToValueAtTime(1200, now + 0.2);
       
       gain.gain.setValueAtTime(0.05, now);
-      gain.gain.linearRampToValueAtTime(0, now + 0.5);
+      gain.gain.linearRampToValueAtTime(0, now + 0.2);
       
       osc.start(now);
-      osc.stop(now + 0.5);
+      osc.stop(now + 0.2);
       break;
     case 'pay':
-      // "Swoosh" up, clean energy
-      createOsc(400, 'sine', now, 0.4, 0.1);
-      createOsc(800, 'triangle', now, 0.4, 0.05);
+      // Cash Register / Coin drop feeling
+      createOsc(1500, 'sine', now, 0.1, 0.1);
+      createOsc(2000, 'sine', now + 0.05, 0.3, 0.1);
       break;
     case 'error':
-      // Soft thud, not jarring
-      createOsc(150, 'triangle', now, 0.2, 0.1);
-      createOsc(140, 'sine', now + 0.05, 0.2, 0.1);
+      // Soft low deny
+      createOsc(150, 'sawtooth', now, 0.15, 0.1);
+      createOsc(120, 'sawtooth', now + 0.1, 0.15, 0.1);
+      break;
+    case 'logout':
+      // Power down / Swoosh out
+      createOsc(600, 'sine', now, 0.2, 0.1);
+      createOsc(300, 'sine', now + 0.1, 0.2, 0.1);
       break;
   }
 };

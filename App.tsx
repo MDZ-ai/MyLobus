@@ -30,6 +30,12 @@ const App: React.FC = () => {
     setCurrentView('DASHBOARD');
   };
 
+  const handleLogout = () => {
+    playSound('logout');
+    setUser(null);
+    setCurrentView('LOGIN');
+  };
+
   const updateBalance = (amount: number, description: string, subtitle: string = 'Transacción') => {
     if (!user) return;
     if (amount > 0) playSound('success');
@@ -61,7 +67,8 @@ const App: React.FC = () => {
         updateBalance, 
         setView: setCurrentView,
         isDarkMode,
-        toggleTheme 
+        toggleTheme,
+        onLogout: handleLogout
     };
 
     switch (currentView) {
@@ -81,18 +88,27 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center bg-[#E5E7EB] ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`
+      min-h-screen w-full flex items-center justify-center 
+      bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-900 dark:to-black
+      ${isDarkMode ? 'dark' : ''}
+      sm:p-8
+    `}>
       {/* 
-        Responsive Container Strategy
+        Responsive Container Strategy - Enhanced Resolution
+        Mobile: Full Screen
+        Desktop: High-Res Floating App Container (Max Width 480px for cleaner mobile-app feel on desktop)
       */}
       <div className="
         w-full h-[100dvh] 
-        sm:h-[850px] sm:w-[400px] sm:max-w-[400px] 
-        sm:rounded-[32px] sm:border-[8px] sm:border-gray-800 sm:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.2)]
+        sm:h-[90vh] sm:w-[480px] sm:max-w-[480px] 
+        sm:rounded-[40px] 
         bg-lobus-bg dark:bg-slate-900
         relative overflow-hidden
         flex flex-col
-        transition-colors duration-300
+        transition-all duration-300
+        shadow-2xl
+        border-0 sm:border border-white/20 dark:border-white/10
       ">
         {/* Main Content Area */}
         <main className="flex-1 overflow-hidden relative">

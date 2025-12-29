@@ -1,52 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppViewProps } from '../types';
 import { 
-  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, Download, Share, Menu, TrendingUp, Smartphone, CheckCircle2
+  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, LogOut, CheckCircle2
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
-import BrandLogo from '../components/BrandLogo';
 
-const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, isDarkMode, toggleTheme }) => {
-  const [activeModal, setActiveModal] = useState<'NONE' | 'ADD' | 'WITHDRAW' | 'SAVINGS' | 'INSURANCE' | 'INSTALL_HELP'>('NONE');
+const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, isDarkMode, toggleTheme, onLogout }) => {
+  const [activeModal, setActiveModal] = useState<'NONE' | 'ADD' | 'WITHDRAW' | 'SAVINGS' | 'INSURANCE'>('NONE');
   const [amount, setAmount] = useState('');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  
-  // PWA Logic
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-
-  useEffect(() => {
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        setIsInstalled(true);
-    }
-    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    setIsIOS(ios);
-
-    const handler = (e: any) => {
-        e.preventDefault();
-        setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  const handleInstallClick = () => {
-      playSound('click');
-      if (deferredPrompt) {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choice: any) => {
-              if (choice.outcome === 'accepted') {
-                  setDeferredPrompt(null);
-                  setIsInstalled(true);
-              }
-          });
-      } else {
-          setActiveModal('INSTALL_HELP');
-      }
-  };
 
   const closeModal = () => {
     if (processing) return;
@@ -102,23 +66,18 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
       <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-12 pb-16 relative shadow-sm">
         <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-sm">
-                     <BrandLogo className="w-8 h-8" />
-                </div>
                 <div>
                     <p className="text-lobus-primaryDark font-semibold text-sm">Es un placer verte,</p>
                     <h1 className="text-lobus-primaryDark font-extrabold text-3xl tracking-tight">{user.name.split(' ')[0]}</h1>
                 </div>
             </div>
             <div className="flex gap-3">
-                 {!isInstalled && (
-                     <button 
-                        onClick={handleInstallClick}
-                        className="w-10 h-10 rounded-full bg-lobus-primaryDark text-white flex items-center justify-center animate-pop hover:scale-105 transition-transform shadow-lg"
-                     >
-                        <Download size={18} strokeWidth={3} />
-                    </button>
-                 )}
+                 <button 
+                    onClick={onLogout}
+                    className="w-10 h-10 rounded-full bg-lobus-primaryDark text-white flex items-center justify-center animate-pop hover:scale-105 transition-transform shadow-lg"
+                 >
+                    <LogOut size={18} strokeWidth={3} className="ml-0.5" />
+                </button>
                  <button 
                     onClick={toggleTheme}
                     className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-lobus-primaryDark hover:bg-white/50 transition-colors"
@@ -307,24 +266,6 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                             </button>
                         </div>
                     </>
-                 ) : activeModal === 'INSTALL_HELP' ? (
-                     <>
-                        <div className="flex justify-between items-center mb-4 px-2">
-                             <h2 className="text-xl font-extrabold text-lobus-primaryDark dark:text-white">Instalar MyLobus</h2>
-                             <button onClick={closeModal} className="bg-gray-100 dark:bg-slate-700 dark:text-white p-2 rounded-full"><X size={20}/></button>
-                        </div>
-                        {/* Reuse install help content structure... */}
-                        <div className="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-[24px] mb-6 text-center">
-                            <div className="w-20 h-20 bg-white dark:bg-slate-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm border border-blue-100 dark:border-slate-500">
-                                <BrandLogo className="w-12 h-12" />
-                            </div>
-                            <h3 className="font-bold text-lobus-primaryDark dark:text-white mb-2">Instalar Aplicación Web</h3>
-                            <p className="text-sm text-lobus-neutral dark:text-gray-300">
-                                Añade MyLobus a tu pantalla de inicio.
-                            </p>
-                        </div>
-                        <button onClick={closeModal} className="w-full mt-6 bg-lobus-primaryDark dark:bg-white text-white dark:text-lobus-primaryDark py-4 rounded-full font-bold">Entendido</button>
-                     </>
                  ) : success ? (
                     <div className="flex flex-col items-center py-8 text-center animate-enter">
                          <div className="w-24 h-24 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-500 mb-6 animate-pop">
