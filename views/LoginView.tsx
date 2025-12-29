@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { LEADERS } from '../constants';
+import { LEADERS, BRAND_LOGO } from '../constants';
 import { Leader } from '../types';
 import { playSound } from '../utils/sound';
-import { ArrowRight, Lock, User, ShieldCheck, Fingerprint, Loader2, AlertCircle, Building2, Download, Share, Plus, Smartphone, Menu, X } from 'lucide-react';
+import { ArrowRight, Lock, User, AlertCircle, Download, Share, Plus, Smartphone, Menu, X, Fingerprint, Loader2 } from 'lucide-react';
 
 interface LoginViewProps {
   onLogin: (leader: Leader) => void;
@@ -125,7 +125,8 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
       {/* Top Banner Style */}
       <div className="bg-lobus-primary h-[35%] rounded-b-[40px] relative flex flex-col items-center justify-center shadow-lg">
           <div className="bg-white p-4 rounded-3xl shadow-xl mb-4">
-               <Building2 size={40} className="text-lobus-primaryDark" />
+               {/* LOGO REAL AQUÍ */}
+               <img src={BRAND_LOGO} alt="Lobus Logo" className="w-12 h-12 object-contain" />
           </div>
           <h1 className="text-4xl font-black text-lobus-primaryDark tracking-tight text-center leading-none">
             My<span className="text-white drop-shadow-md">Lobus</span>
@@ -225,7 +226,8 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 
                 <div className="bg-blue-50 p-6 rounded-[24px] mb-6 text-center">
                     <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm">
-                        <Download size={32} className="text-lobus-primaryDark" />
+                         {/* LOGO EN MODAL TAMBIÉN */}
+                        <img src={BRAND_LOGO} alt="App Logo" className="w-10 h-10 object-contain" />
                     </div>
                     <h3 className="font-bold text-lobus-primaryDark mb-2">Instalar Aplicación Web</h3>
                     <p className="text-sm text-lobus-neutral">

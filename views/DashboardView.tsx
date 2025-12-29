@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { AppViewProps } from '../types';
 import { 
-  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, ArrowDownLeft, FileText, Smartphone, Package, Mail, FileBadge, Download, Share, Menu
+  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, Download, Share, Menu, TrendingUp, Smartphone
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import { BRAND_LOGO } from '../constants';
 
 const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, isDarkMode, toggleTheme }) => {
   const [activeModal, setActiveModal] = useState<'NONE' | 'ADD' | 'WITHDRAW' | 'SAVINGS' | 'INSURANCE' | 'INSTALL_HELP'>('NONE');
@@ -92,9 +93,15 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
       {/* HEADER SECTION (Poste Yellow Style) */}
       <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-12 pb-16 relative shadow-sm">
         <div className="flex justify-between items-start mb-6">
-            <div>
-                <p className="text-lobus-primaryDark font-semibold text-sm">Es un placer verte,</p>
-                <h1 className="text-lobus-primaryDark font-extrabold text-3xl tracking-tight">{user.name.split(' ')[0]}</h1>
+            <div className="flex items-center gap-3">
+                 {/* MINI LOGO EN CABECERA */}
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+                     <img src={BRAND_LOGO} alt="Logo" className="w-6 h-6 object-contain" />
+                </div>
+                <div>
+                    <p className="text-lobus-primaryDark font-semibold text-sm">Es un placer verte,</p>
+                    <h1 className="text-lobus-primaryDark font-extrabold text-3xl tracking-tight">{user.name.split(' ')[0]}</h1>
+                </div>
             </div>
             <div className="flex gap-3">
                  {!isInstalled && (
@@ -151,46 +158,6 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                       </button>
                   ))}
               </div>
-          </div>
-      </div>
-
-      {/* --- MENSAJES OFICIALES --- */}
-      <div className="px-4 mt-6">
-          <div className="flex justify-between items-end mb-3 px-2">
-            <h3 className="text-lobus-primaryDark dark:text-white font-extrabold text-lg">Mensajes</h3>
-            <button 
-                onClick={() => { playSound('click'); setView('MESSAGES'); }}
-                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
-            >
-                Ver todos
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-             {user.messages && user.messages.length > 0 ? (
-                 user.messages.slice(0, 2).map(msg => (
-                    <button 
-                        key={msg.id} 
-                        onClick={() => { playSound('click'); setView('MESSAGES'); }}
-                        className={`w-full text-left bg-white dark:bg-slate-800 p-4 rounded-[20px] border ${msg.isLegal ? 'border-l-4 border-l-lobus-primaryDark border-y-gray-100 dark:border-y-slate-700 border-r-gray-100 dark:border-r-slate-700' : 'border-gray-100 dark:border-slate-700'} shadow-sm flex gap-4 active:scale-98 transition-transform`}
-                    >
-                        <div className={`mt-1 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${msg.isLegal ? 'bg-blue-50 dark:bg-blue-900/30 text-lobus-primaryDark dark:text-blue-300' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-300'}`}>
-                            {msg.isLegal ? <FileBadge size={20} /> : <Mail size={20} />}
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex justify-between items-start">
-                                <h4 className="font-bold text-lobus-primaryDark dark:text-white text-sm">{msg.sender}</h4>
-                                <span className="text-[10px] font-bold text-gray-400">{msg.date}</span>
-                            </div>
-                            <p className="text-xs font-bold text-lobus-neutral dark:text-gray-300 mt-0.5">{msg.subject}</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-1">{msg.preview}</p>
-                            {msg.isLegal && <span className="inline-block mt-2 text-[10px] font-bold bg-blue-50 dark:bg-blue-900/30 text-lobus-primaryDark dark:text-blue-300 px-2 py-0.5 rounded-md">VALOR LEGAL</span>}
-                        </div>
-                    </button>
-                 ))
-             ) : (
-                 <p className="text-center text-sm text-gray-400 py-4">No tienes mensajes nuevos.</p>
-             )}
           </div>
       </div>
 
@@ -342,7 +309,7 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                         
                         <div className="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-[24px] mb-6 text-center">
                             <div className="w-16 h-16 bg-white dark:bg-slate-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm">
-                                <Download size={32} className="text-lobus-primaryDark dark:text-white" />
+                                <img src={BRAND_LOGO} alt="App Logo" className="w-10 h-10 object-contain" />
                             </div>
                             <h3 className="font-bold text-lobus-primaryDark dark:text-white mb-2">Instalar Aplicación Web</h3>
                             <p className="text-sm text-lobus-neutral dark:text-gray-300">

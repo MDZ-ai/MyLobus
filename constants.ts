@@ -1,5 +1,10 @@
 import { Leader, TransportRoute, StockData, CountryService, Parcel, UtilityContract, InsurancePolicy, Message, Document } from './types';
 
+// --- CONFIGURACIÓN DE MARCA ---
+// La imagen "logo.png" debe estar en la carpeta "public" del proyecto.
+export const BRAND_LOGO = "/logo.png"; 
+// -----------------------------
+
 const INITIAL_TRANSACTIONS = [
   { id: 't1', title: 'Nómina Unión', subtitle: 'Salario', amount: 5000, date: 'Hoy', type: 'income' as const },
   { id: 't2', title: 'Café Lobus', subtitle: 'Desayuno', amount: -15, date: 'Ayer', type: 'expense' as const },

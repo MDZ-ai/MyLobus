@@ -4,7 +4,8 @@ const CACHE_NAME = 'mylobus-os-v102-prod';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/logo.png'
 ];
 
 // Install Event: Cache Core Assets
