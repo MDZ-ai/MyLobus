@@ -1,12 +1,11 @@
-const CACHE_NAME = 'mylobus-os-v105-logo-fix';
+const CACHE_NAME = 'mylobus-os-v106-svg-fix';
 
 // Files that ALWAYS exist in both Dev and Prod
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
-  // logo.png se ha eliminado de assets críticos porque ahora está incrustado en JS, 
-  // aunque el manifest lo siga usando, esto evita fallos críticos en la app.
+  '/manifest.json',
+  '/logo.svg'
 ];
 
 // Install Event: Cache Core Assets

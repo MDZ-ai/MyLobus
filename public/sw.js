@@ -1,10 +1,11 @@
-const CACHE_NAME = 'mylobus-os-v105-logo-fix';
+const CACHE_NAME = 'mylobus-os-v106-svg-fix';
 
 // Files that ALWAYS exist in both Dev and Prod
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/logo.svg'
 ];
 
 // Install Event: Cache Core Assets
