@@ -60,30 +60,31 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
     setShowConfirm(true);
   };
 
-  const handleQuickContact = (handle: string) => {
-      playSound('click');
-      setRecipient(handle);
-  };
-
   const validateAndProceed = () => {
     setError('');
     
     // Validation logic based on mode
     if (['TRANSFER', 'SPLIT', 'REQUEST'].includes(mode) && !recipient) {
-      setError('Selecciona un contacto');
+      setError('Selecciona un contacto válido');
       playSound('error');
       return;
     }
     
+    if (mode === 'GLOBAL' && recipient.length < 5) {
+        setError('IBAN/Cuenta inválida');
+        playSound('error');
+        return;
+    }
+    
     const val = parseFloat(amount);
     if (isNaN(val) || val <= 0) {
-      setError('Importe no válido');
+      setError('Importe debe ser mayor a 0');
       playSound('error');
       return;
     }
 
     if ((mode === 'TRANSFER' || mode === 'GLOBAL') && val > user.balance) {
-      setError('Saldo insuficiente');
+      setError(`Saldo insuficiente (Max: €${user.balance})`);
       playSound('error');
       return;
     }
@@ -115,7 +116,7 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
             finalAmount = confirmData.amount; 
             subtitle = "Ingreso Cajero";
         }
-        else if (confirmData.type === 'SPLIT') { desc = `División de Cuenta`; subtitle = `Con ${confirmData.to}`; finalAmount = 0; } // Mock logic
+        else if (confirmData.type === 'SPLIT') { desc = `División de Cuenta`; subtitle = `Con ${confirmData.to}`; finalAmount = 0; } 
         else if (confirmData.type === 'REQUEST') { desc = `Solicitud Enviada`; subtitle = `A ${confirmData.to}`; finalAmount = 0; }
         else desc = `Envío a ${confirmData.to}`;
 
@@ -130,14 +131,12 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
         
         // Auto close after success
         setTimeout(() => {
-            if (confirmData.type !== 'NFC') { // NFC usually stays on screen a bit longer or goes back manually
+            if (confirmData.type !== 'NFC') { 
                 resetState();
             }
         }, 2500);
     }, 2000);
   };
-
-  // --- SUB-COMPONENTS FOR CLEANER CODE ---
 
   const ActionButton = ({ icon: Icon, label, onClick, color = "bg-white dark:bg-slate-800" }: any) => (
       <button 
@@ -153,8 +152,8 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
 
   const AmountInput = () => (
       <div className="space-y-4">
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-[32px] border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2">
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Importe a {mode === 'REQUEST' ? 'Solicitar' : 'Enviar'}</label>
+        <div className={`bg-white dark:bg-slate-800 p-6 rounded-[32px] border ${error ? 'border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-gray-200 dark:border-slate-700'} shadow-sm flex flex-col items-center justify-center gap-2 transition-colors`}>
+            <label className={`text-xs font-bold uppercase tracking-widest ${error ? 'text-red-500' : 'text-gray-400'}`}>Importe a {mode === 'REQUEST' ? 'Solicitar' : 'Enviar'}</label>
             <div className="flex items-center gap-1">
                 <span className="text-3xl font-black text-lobus-primaryDark dark:text-white">€</span>
                 <input 
@@ -252,7 +251,7 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
                              <input 
                                 placeholder="IBAN / SWIFT / BIC"
                                 value={recipient}
-                                onChange={(e) => setRecipient(e.target.value)}
+                                onChange={(e) => { setRecipient(e.target.value); setError(''); }}
                                 className="w-full bg-transparent font-bold text-lobus-primaryDark dark:text-white outline-none"
                              />
                          </div>
@@ -261,7 +260,7 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
                             <select 
                                 value={recipient} 
                                 onChange={e => { setRecipient(e.target.value); setError(''); }}
-                                className={`w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-lobus-primaryDark dark:text-white rounded-[24px] py-4 pl-4 pr-10 outline-none appearance-none font-bold text-lg shadow-sm transition-all focus:border-lobus-primary`}
+                                className={`w-full bg-white dark:bg-slate-800 border ${!recipient && error ? 'border-red-500' : 'border-gray-200 dark:border-slate-700'} text-lobus-primaryDark dark:text-white rounded-[24px] py-4 pl-4 pr-10 outline-none appearance-none font-bold text-lg shadow-sm transition-all focus:border-lobus-primary`}
                             >
                                 <option value="">Seleccionar Contacto...</option>
                                 {LEADERS.filter(l => l.handle !== user.handle).map(l => (
@@ -292,16 +291,13 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
             </div>
         )}
 
-        {/* --- SCANNER MODES (QR, Cash) --- */}
+        {/* --- SCANNER MODES --- */}
         {(mode === 'QR' || mode === 'CASH') && (
              <div className="flex flex-col items-center justify-center h-[500px] relative animate-enter rounded-[40px] overflow-hidden bg-black border-4 border-gray-800">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
-                
-                {/* Fake Camera Feed */}
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
 
-                {/* Overlay UI */}
                 <div className="relative z-20 flex flex-col items-center justify-between h-full py-12 w-full">
                     <div className="bg-black/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 text-white font-bold text-sm flex items-center gap-2">
                         {mode === 'QR' ? <QrCode size={16}/> : <Banknote size={16}/>}
@@ -321,19 +317,12 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
              </div>
         )}
 
-        {/* --- ORGANIC NFC MODE --- */}
+        {/* --- NFC MODE --- */}
         {mode === 'NFC' && (
              <div className="flex flex-col items-center justify-center min-h-[500px] relative animate-enter overflow-hidden rounded-[40px]">
-                
-                {/* Organic Multi-Layer Ripples */}
                 <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
-                     {/* Outer Slow Ripple */}
                      <div className={`absolute w-[400px] h-[400px] bg-lobus-primary/10 dark:bg-yellow-500/10 rounded-full animate-ping ${paying ? 'opacity-40 duration-700' : 'opacity-20 duration-[3000ms]'}`} />
-                     
-                     {/* Mid Pulse */}
                      <div className={`absolute w-[300px] h-[300px] border border-lobus-primary/30 dark:border-yellow-500/30 rounded-full animate-ripple ${paying ? 'duration-1000' : 'duration-[2000ms]'}`} />
-                     
-                     {/* Inner Fast Pulse (when paying) */}
                      {paying && <div className="absolute w-[200px] h-[200px] bg-lobus-primary/20 rounded-full animate-ping duration-500" />}
                 </div>
 
@@ -365,7 +354,7 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
 
       </div>
 
-      {/* CONFIRMATION SHEET (Shared for all modes) */}
+      {/* CONFIRMATION SHEET */}
       {showConfirm && (
           <div className="fixed inset-0 z-[60] flex items-end justify-center bg-lobus-primaryDark/40 backdrop-blur-md animate-enter">
               <div onClick={() => !paying && setShowConfirm(false)} className="absolute inset-0" />

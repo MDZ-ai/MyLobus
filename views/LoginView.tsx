@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { LEADERS, BRAND_LOGO } from '../constants';
+import { LEADERS } from '../constants';
 import { Leader } from '../types';
 import { playSound } from '../utils/sound';
-import { ArrowRight, Lock, User, AlertCircle, Download, Share, Plus, Smartphone, Menu, X, Fingerprint, Loader2 } from 'lucide-react';
+import { ArrowRight, Lock, User, AlertCircle, Download, Share, Plus, Smartphone, Menu, X, Loader2 } from 'lucide-react';
+import BrandLogo from '../components/BrandLogo';
 
 interface LoginViewProps {
   onLogin: (leader: Leader) => void;
@@ -13,6 +14,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [handle, setHandle] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldError, setFieldError] = useState<'handle' | 'password' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
   // PWA Logic
@@ -22,16 +24,12 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    // Check Standalone Mode
     if (window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true);
     }
-    
-    // Check iOS
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
 
-    // Capture install prompt
     const handler = (e: any) => {
         e.preventDefault();
         setDeferredPrompt(e);
@@ -49,19 +47,31 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
              setDeferredPrompt(null);
           });
       } else {
-          // If no automatic prompt is available (iOS or already dismissed), show manual instructions
           setShowInstallHelp(true);
       }
   };
 
   const validate = () => {
-    if (!handle.trim()) {
+    setFieldError(null);
+    const cleanHandle = handle.trim();
+    
+    if (!cleanHandle) {
       setError('Introduce tu ID Ciudadano');
+      setFieldError('handle');
       playSound('error');
       return false;
     }
+    
+    if (cleanHandle.length < 3) {
+      setError('El ID es demasiado corto');
+      setFieldError('handle');
+      playSound('error');
+      return false;
+    }
+
     if (!password.trim()) {
       setError('La contraseña es obligatoria');
+      setFieldError('password');
       playSound('error');
       return false;
     }
@@ -95,6 +105,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         } else {
           playSound('error');
           setError('Credenciales no válidas');
+          setFieldError('handle'); 
           setIsLoading(false);
         }
     }, 800);
@@ -110,7 +121,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             <div className="absolute inset-0 border-[6px] border-white/20 rounded-full animate-ripple"></div>
             <div className="absolute inset-0 border-[6px] border-lobus-primary/50 rounded-full animate-ripple" style={{animationDelay: '0.6s'}}></div>
             <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center relative z-10 border-4 border-lobus-primary shadow-lg animate-pulse-slow">
-                 <img src={BRAND_LOGO} alt="Lobus Security" className="w-16 h-16 object-contain" />
+                 <BrandLogo className="w-16 h-16" />
             </div>
         </div>
         <h2 className="text-3xl font-extrabold text-white mt-8 mb-2 animate-slide-up">Lobus ID</h2>
@@ -125,8 +136,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
       {/* Top Banner Style */}
       <div className="bg-lobus-primary h-[40%] rounded-b-[48px] relative flex flex-col items-center justify-center shadow-lg pb-8">
           <div className="bg-white p-5 rounded-[24px] shadow-2xl mb-5 animate-pop">
-               {/* LOGO REAL GRANDE */}
-               <img src={BRAND_LOGO} alt="Lobus Logo" className="w-24 h-24 object-contain" />
+               <BrandLogo className="w-24 h-24" />
           </div>
           <h1 className="text-5xl font-black text-lobus-primaryDark tracking-tight text-center leading-none">
             My<span className="text-white drop-shadow-md">Lobus</span>
@@ -141,17 +151,17 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 ml-3">IDENTIFICADOR</label>
-                <div className={`relative group transition-all duration-300 ${error && !handle ? 'shake' : ''}`}>
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-lobus-primaryDark group-focus-within:text-lobus-primary transition-colors">
+                <div className={`relative group transition-all duration-300 ${fieldError === 'handle' ? 'shake' : ''}`}>
+                <div className={`absolute left-5 top-1/2 -translate-y-1/2 transition-colors ${fieldError === 'handle' ? 'text-red-500' : 'text-lobus-primaryDark group-focus-within:text-lobus-primary'}`}>
                     <User size={20} />
                 </div>
                 <input 
                     type="text" 
                     value={handle}
-                    onChange={(e) => { setHandle(e.target.value); setError(''); }}
+                    onChange={(e) => { setHandle(e.target.value); setError(''); setFieldError(null); }}
                     placeholder="ej. @ciudadano"
                     className={`w-full bg-lobus-bg border-b-2 rounded-t-xl py-4 pl-12 pr-4 text-base font-bold text-lobus-primaryDark outline-none transition-all placeholder:text-gray-400
-                        ${error && !handle ? 'border-lobus-error bg-red-50' : 'border-gray-200 focus:border-lobus-primary focus:bg-blue-50'}
+                        ${fieldError === 'handle' ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-lobus-primary focus:bg-blue-50'}
                     `}
                 />
                 </div>
@@ -159,17 +169,17 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
             <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 ml-3">CONTRASEÑA</label>
-                <div className={`relative group transition-all duration-300 ${error && !password ? 'shake' : ''}`}>
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-lobus-primaryDark group-focus-within:text-lobus-primary transition-colors">
+                <div className={`relative group transition-all duration-300 ${fieldError === 'password' ? 'shake' : ''}`}>
+                <div className={`absolute left-5 top-1/2 -translate-y-1/2 transition-colors ${fieldError === 'password' ? 'text-red-500' : 'text-lobus-primaryDark group-focus-within:text-lobus-primary'}`}>
                     <Lock size={20} />
                 </div>
                 <input 
                     type="password" 
                     value={password}
-                    onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                    onChange={(e) => { setPassword(e.target.value); setError(''); setFieldError(null); }}
                     placeholder="••••••••"
                     className={`w-full bg-lobus-bg border-b-2 rounded-t-xl py-4 pl-12 pr-4 text-base font-bold text-lobus-primaryDark outline-none transition-all placeholder:text-gray-400
-                        ${error && !password ? 'border-lobus-error bg-red-50' : 'border-gray-200 focus:border-lobus-primary focus:bg-blue-50'}
+                        ${fieldError === 'password' ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-lobus-primary focus:bg-blue-50'}
                     `}
                 />
                 </div>
@@ -211,29 +221,26 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           <p className="text-[10px] text-gray-300 font-bold">Unión Lobus • Sistema Operativo Soberano</p>
       </div>
 
-      {/* INSTALL HELP MODAL */}
+      {/* Install Help Modal */}
       {showInstallHelp && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-lobus-primaryDark/60 backdrop-blur-md animate-enter">
             <div onClick={() => setShowInstallHelp(false)} className="absolute inset-0" />
             <div className="relative w-full max-w-md bg-white rounded-t-[32px] p-6 pb-12 shadow-2xl animate-slide-up">
                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
-                
                 <div className="flex justify-between items-center mb-4 px-2">
                      <h2 className="text-xl font-extrabold text-lobus-primaryDark">Instalar MyLobus</h2>
                      <button onClick={() => setShowInstallHelp(false)} className="bg-gray-100 p-2 rounded-full"><X size={20}/></button>
                 </div>
-                
                 <div className="bg-blue-50 p-6 rounded-[24px] mb-6 text-center">
                     <div className="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm border border-blue-100">
-                         {/* LOGO EN MODAL TAMBIÉN */}
-                        <img src={BRAND_LOGO} alt="App Logo" className="w-12 h-12 object-contain" />
+                        <BrandLogo className="w-12 h-12" />
                     </div>
                     <h3 className="font-bold text-lobus-primaryDark mb-2">Instalar Aplicación Web</h3>
                     <p className="text-sm text-lobus-neutral">
                         Añade MyLobus a tu pantalla de inicio para una experiencia a pantalla completa y acceso offline.
                     </p>
                 </div>
-
+                
                 {isIOS ? (
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-2xl">

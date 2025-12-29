@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MOCK_STOCK_DATA_1D, MOCK_STOCK_DATA_1M, COMPANIES } from '../constants';
 import GlassCard from '../components/GlassCard';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Search, X, Loader2, ArrowUpRight, TrendingUp, TrendingDown, RefreshCcw } from 'lucide-react';
+import { Search, X, Loader2, ArrowUpRight, TrendingUp, TrendingDown, RefreshCcw, AlertCircle } from 'lucide-react';
 import { AppViewProps } from '../types';
 import { playSound } from '../utils/sound';
 
@@ -13,6 +13,7 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
   const [trading, setTrading] = useState<'BUY' | 'SELL' | null>(null);
   const [shares, setShares] = useState(1);
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState('');
   
   // Real-time Stock State
   const [liveStocks, setLiveStocks] = useState(COMPANIES.map(c => ({
@@ -22,7 +23,6 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
   })));
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
-  // Real-time update logic (30s ticker)
   useEffect(() => {
       const interval = setInterval(() => {
           updateMarket();
@@ -32,19 +32,16 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
 
   const updateMarket = () => {
       setLiveStocks(prev => prev.map(stock => {
-          // Simulate random fluctuation between -2% and +2%
           const volatility = 0.02;
           const change = 1 + (Math.random() * volatility * 2 - volatility);
           const newPrice = Math.round(stock.price * change * 100) / 100;
-          
-          // Calculate visual change percentage
           const percentChange = ((newPrice - stock.price) / stock.price) * 100;
           
           return {
               ...stock,
               price: newPrice,
               change: `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(2)}%`,
-              changeValue: percentChange // For color logic
+              changeValue: percentChange
           };
       }));
       setLastUpdated(new Date());
@@ -64,21 +61,22 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
 
   const handleTrade = () => {
     if (!selectedStock || !trading) return;
+    setError('');
     
-    // Find the live price for the transaction, not the static initial one
-    const currentPrice = liveStocks.find(s => s.symbol === selectedStock.symbol)?.price || selectedStock.price;
-    const totalCost = currentPrice * shares;
-
+    // Validate Shares
     if (shares <= 0 || !Number.isInteger(shares)) {
+        setError("La cantidad debe ser un número entero positivo");
         playSound('error');
-        alert("Cantidad de acciones inválida");
         return;
     }
 
+    const currentPrice = liveStocks.find(s => s.symbol === selectedStock.symbol)?.price || selectedStock.price;
+    const totalCost = currentPrice * shares;
+
     if (trading === 'BUY') {
         if (user.balance < totalCost) {
+            setError("Fondos insuficientes");
             playSound('error');
-            alert("Fondos insuficientes");
             return;
         }
         setProcessing(true);
@@ -89,6 +87,7 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
             setProcessing(false);
             setTrading(null);
             setSelectedStock(null);
+            setShares(1); // Reset
             playSound('success');
         }, 1500);
     } else {
@@ -100,6 +99,7 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
             setProcessing(false);
             setTrading(null);
             setSelectedStock(null);
+            setShares(1); // Reset
             playSound('success');
         }, 1500);
     }
@@ -194,7 +194,7 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
             return (
                 <div 
                     key={company.symbol} 
-                    onClick={() => setSelectedStock(company)}
+                    onClick={() => { setSelectedStock(company); setShares(1); setError(''); }}
                     className="p-5 flex items-center justify-between hover:border-lobus-violet transition-colors cursor-pointer bg-white dark:bg-slate-800 border border-lobus-border dark:border-slate-700 rounded-[32px] shadow-sm"
                 >
                     <div className="flex items-center gap-4">
@@ -227,7 +227,7 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
                         <h2 className="text-2xl font-black text-lobus-obsidian dark:text-white">{selectedStock.name}</h2>
                         <p className="text-lobus-neutral dark:text-gray-400 font-medium">{selectedStock.symbol} • ${selectedStock.price.toFixed(2)}</p>
                     </div>
-                    <button onClick={() => { setSelectedStock(null); setTrading(null); }} disabled={processing} className="bg-lobus-bg dark:bg-slate-700 p-3 rounded-full hover:bg-gray-200 text-lobus-obsidian dark:text-white">
+                    <button onClick={() => { setSelectedStock(null); setTrading(null); setError(''); }} disabled={processing} className="bg-lobus-bg dark:bg-slate-700 p-3 rounded-full hover:bg-gray-200 text-lobus-obsidian dark:text-white">
                         <X size={20} />
                     </button>
                 </div>
@@ -258,6 +258,9 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
                             </div>
                             <p className="text-lobus-violet font-bold mt-4 text-xl">Total: ${(selectedStock.price * shares).toLocaleString()}</p>
                          </div>
+                         
+                         {error && <div className="text-red-500 font-bold text-sm text-center flex items-center justify-center gap-2"><AlertCircle size={16}/>{error}</div>}
+
                          <button 
                             onClick={handleTrade}
                             disabled={processing}

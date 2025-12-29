@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { AppViewProps } from '../types';
 import { 
-  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, Download, Share, Menu, TrendingUp, Smartphone
+  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, Download, Share, Menu, TrendingUp, Smartphone, CheckCircle2
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
-import { BRAND_LOGO } from '../constants';
+import BrandLogo from '../components/BrandLogo';
 
 const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, isDarkMode, toggleTheme }) => {
   const [activeModal, setActiveModal] = useState<'NONE' | 'ADD' | 'WITHDRAW' | 'SAVINGS' | 'INSURANCE' | 'INSTALL_HELP'>('NONE');
   const [amount, setAmount] = useState('');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   
   // PWA Logic
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -18,12 +19,9 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true);
     }
-    
-    // Check for iOS
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
 
@@ -46,7 +44,6 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
               }
           });
       } else {
-          // If no prompt available (iOS or blocked), show manual instructions
           setActiveModal('INSTALL_HELP');
       }
   };
@@ -57,32 +54,43 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
     setAmount('');
     setProcessing(false);
     setError('');
+    setSuccess(false);
     playSound('click');
   };
 
   const handleTransaction = () => {
+      setError('');
       const val = parseFloat(amount);
+      
       if (isNaN(val) || val <= 0) {
-          setError('Monto no válido');
+          setError('Ingresa un monto válido mayor a 0');
+          playSound('error');
+          return;
+      }
+
+      if (activeModal === 'WITHDRAW' && user.balance < val) {
+          setError('Saldo insuficiente para realizar el retiro');
+          playSound('error');
           return;
       }
       
       setProcessing(true);
-      playSound('pay');
+      if (activeModal === 'ADD') playSound('success'); // Good sound for add
+      else playSound('pay'); // Pay sound for withdraw
 
       setTimeout(() => {
           if (activeModal === 'ADD') {
             updateBalance(val, "Recarga Cuenta", "Banco Lobus");
           } else {
-             if (user.balance < val) {
-                 setProcessing(false);
-                 setError('Saldo insuficiente');
-                 return;
-             }
              updateBalance(-val, "Retiro Cajero", "Sin Tarjeta");
           }
           setProcessing(false);
-          closeModal();
+          setSuccess(true);
+          playSound('success');
+          
+          setTimeout(() => {
+             closeModal();
+          }, 2000);
       }, 1500);
   };
 
@@ -90,13 +98,12 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
     <div className="h-full overflow-y-auto bg-lobus-bg dark:bg-slate-900 animate-enter font-sans transition-colors duration-300">
       <div className="pb-40"> 
       
-      {/* HEADER SECTION (Poste Yellow Style) */}
+      {/* HEADER SECTION */}
       <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-12 pb-16 relative shadow-sm">
         <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-3">
-                 {/* MINI LOGO EN CABECERA - MÁS GRANDE */}
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-sm">
-                     <img src={BRAND_LOGO} alt="Logo" className="w-8 h-8 object-contain" />
+                     <BrandLogo className="w-8 h-8" />
                 </div>
                 <div>
                     <p className="text-lobus-primaryDark font-semibold text-sm">Es un placer verte,</p>
@@ -253,8 +260,8 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
       {activeModal !== 'NONE' && (
          <div className="fixed inset-0 z-[60] flex items-end justify-center bg-lobus-primaryDark/60 backdrop-blur-sm animate-enter">
              <div onClick={closeModal} className="absolute inset-0" />
-             <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-t-[32px] p-6 pb-12 shadow-2xl animate-slide-up transition-colors">
-                 <div className="w-12 h-1.5 bg-gray-200 dark:bg-slate-600 rounded-full mx-auto mb-6" />
+             <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-t-[40px] p-8 pb-12 shadow-2xl animate-slide-up transition-colors">
+                 <div className="w-16 h-1.5 bg-gray-200 dark:bg-slate-600 rounded-full mx-auto mb-6" />
 
                  {activeModal === 'SAVINGS' ? (
                      <>
@@ -306,50 +313,26 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                              <h2 className="text-xl font-extrabold text-lobus-primaryDark dark:text-white">Instalar MyLobus</h2>
                              <button onClick={closeModal} className="bg-gray-100 dark:bg-slate-700 dark:text-white p-2 rounded-full"><X size={20}/></button>
                         </div>
-                        
+                        {/* Reuse install help content structure... */}
                         <div className="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-[24px] mb-6 text-center">
                             <div className="w-20 h-20 bg-white dark:bg-slate-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm border border-blue-100 dark:border-slate-500">
-                                <img src={BRAND_LOGO} alt="App Logo" className="w-12 h-12 object-contain" />
+                                <BrandLogo className="w-12 h-12" />
                             </div>
                             <h3 className="font-bold text-lobus-primaryDark dark:text-white mb-2">Instalar Aplicación Web</h3>
                             <p className="text-sm text-lobus-neutral dark:text-gray-300">
-                                Añade MyLobus a tu pantalla de inicio para una experiencia a pantalla completa y acceso offline.
+                                Añade MyLobus a tu pantalla de inicio.
                             </p>
                         </div>
-
-                        {isIOS ? (
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-4 p-4 border border-gray-200 dark:border-slate-600 rounded-2xl">
-                                    <div className="w-10 h-10 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center shrink-0">
-                                        <Share size={20} className="text-blue-500" />
-                                    </div>
-                                    <p className="text-sm font-medium dark:text-gray-300">1. Pulsa el botón <strong>Compartir</strong> en la barra inferior de Safari.</p>
-                                </div>
-                                <div className="flex items-center gap-4 p-4 border border-gray-200 dark:border-slate-600 rounded-2xl">
-                                    <div className="w-10 h-10 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center shrink-0">
-                                        <Plus size={20} className="text-gray-600 dark:text-gray-300" />
-                                    </div>
-                                    <p className="text-sm font-medium dark:text-gray-300">2. Desliza hacia abajo y selecciona <strong>"Añadir a la pantalla de inicio"</strong>.</p>
-                                </div>
-                            </div>
-                        ) : (
-                             <div className="space-y-4">
-                                <div className="flex items-center gap-4 p-4 border border-gray-200 dark:border-slate-600 rounded-2xl">
-                                    <div className="w-10 h-10 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center shrink-0">
-                                        <Menu size={20} className="text-gray-600 dark:text-gray-300" />
-                                    </div>
-                                    <p className="text-sm font-medium dark:text-gray-300">1. Abre el menú del navegador (tres puntos).</p>
-                                </div>
-                                <div className="flex items-center gap-4 p-4 border border-gray-200 dark:border-slate-600 rounded-2xl">
-                                    <div className="w-10 h-10 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center shrink-0">
-                                        <Smartphone size={20} className="text-gray-600 dark:text-gray-300" />
-                                    </div>
-                                    <p className="text-sm font-medium dark:text-gray-300">2. Selecciona <strong>"Instalar aplicación"</strong> o "Añadir a pantalla de inicio".</p>
-                                </div>
-                            </div>
-                        )}
                         <button onClick={closeModal} className="w-full mt-6 bg-lobus-primaryDark dark:bg-white text-white dark:text-lobus-primaryDark py-4 rounded-full font-bold">Entendido</button>
                      </>
+                 ) : success ? (
+                    <div className="flex flex-col items-center py-8 text-center animate-enter">
+                         <div className="w-24 h-24 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-500 mb-6 animate-pop">
+                             <CheckCircle2 size={60} strokeWidth={3} />
+                         </div>
+                         <h2 className="text-3xl font-black text-lobus-primaryDark dark:text-white mb-2">¡Operación Exitosa!</h2>
+                         <p className="text-lobus-neutral dark:text-gray-400 font-medium">{activeModal === 'ADD' ? 'Recarga completada' : 'Retiro registrado'}</p>
+                     </div>
                  ) : (
                      <>
                         <h2 className="text-xl font-extrabold text-lobus-primaryDark dark:text-white mb-6 text-center">
@@ -357,9 +340,9 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                         </h2>
 
                         <div className="space-y-4">
-                             {/* Unified Huge Input */}
-                            <div className="bg-white dark:bg-slate-700 p-6 rounded-[32px] border border-gray-200 dark:border-slate-600 shadow-sm flex flex-col items-center justify-center gap-2">
-                                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Monto</label>
+                             {/* Unified Huge Input - Matching PayView */}
+                            <div className={`bg-white dark:bg-slate-700 p-6 rounded-[32px] border ${error ? 'border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-gray-200 dark:border-slate-600'} shadow-sm flex flex-col items-center justify-center gap-2 transition-colors`}>
+                                <label className={`text-xs font-bold uppercase tracking-widest ${error ? 'text-red-500' : 'text-gray-400'}`}>Monto</label>
                                 <div className="flex items-center gap-1">
                                     <span className="text-3xl font-black text-lobus-primaryDark dark:text-white">€</span>
                                     <input 
@@ -368,19 +351,23 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                                         onChange={e => { setAmount(e.target.value); setError(''); }}
                                         placeholder="0"
                                         autoFocus
-                                        className="w-40 text-center bg-transparent text-5xl font-black text-lobus-primaryDark dark:text-white outline-none placeholder:text-gray-200"
+                                        className="w-40 text-center bg-transparent text-5xl font-black text-lobus-primaryDark dark:text-white outline-none placeholder:text-gray-200 dark:placeholder:text-gray-600"
                                     />
                                 </div>
                             </div>
                             
-                            {error && <div className="text-red-500 text-sm font-bold flex items-center gap-2 justify-center bg-red-50 dark:bg-red-900/30 p-3 rounded-2xl"><AlertCircle size={16}/> {error}</div>}
+                            {error && (
+                                <div className="flex items-center gap-3 text-red-500 text-sm font-bold bg-red-50 dark:bg-red-900/30 p-4 rounded-[20px] animate-slide-up border border-red-100 dark:border-red-900 justify-center">
+                                    <AlertCircle size={20} /> {error}
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-2 gap-4 mt-4">
                                 <button onClick={closeModal} className="py-5 rounded-[32px] font-bold text-lobus-neutral bg-gray-100 dark:bg-slate-600 dark:text-white hover:bg-gray-200 transition-colors">Cancelar</button>
                                 <button 
                                     onClick={handleTransaction}
                                     disabled={processing}
-                                    className="py-5 rounded-[32px] font-bold text-lobus-primaryDark bg-lobus-primary hover:bg-yellow-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="py-5 rounded-[32px] font-bold text-lobus-primaryDark bg-lobus-primary hover:bg-yellow-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg active:scale-95"
                                 >
                                     {processing ? <Loader2 className="animate-spin" /> : 'Confirmar'}
                                 </button>

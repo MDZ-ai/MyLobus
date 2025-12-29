@@ -154,7 +154,7 @@ const ServicePaymentView: React.FC<AppViewProps> = ({ user, updateBalance, setVi
                           </button>
                       </div>
                  ) : success ? (
-                     // SUCCESS CONTENT
+                     // SUCCESS CONTENT - Unified Style
                      <div className="flex flex-col items-center py-8 text-center animate-enter">
                          <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-6 animate-pop">
                              <CheckCircle2 size={60} strokeWidth={3} />
