@@ -1,0 +1,9 @@
+{
+  "name": "Copy of MyLobus",
+  "description": "The Ultimate Sovereign OS for the Lobus Union. Merging banking, mobility, AI, and social into an Ethereal Luxury interface.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
