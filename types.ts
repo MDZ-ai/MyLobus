@@ -55,6 +55,28 @@ export interface InsurancePolicy {
   monthlyCost?: number;
 }
 
+export interface SimData {
+  phoneNumber: string;
+  provider: 'LoboTel' | 'StarMushroom' | 'OsoCel' | 'GagaNet';
+  planName: string;
+  dataTotalGB: number;
+  dataUsedGB: number;
+  minutesUsed: number;
+  smsUsed: number;
+  balance: number; // Saldo de la SIM
+  nextRenewal: string;
+  roaming: boolean;
+}
+
+export interface NewsItem {
+  id: string;
+  category: string;
+  title: string;
+  time: string;
+  image: string;
+  color: string;
+}
+
 export interface Leader {
   id: string;
   handle: string;
@@ -72,6 +94,7 @@ export interface Leader {
   policies: InsurancePolicy[];
   messages: Message[];
   documents: Document[];
+  sim: SimData;
 }
 
 export interface StockData {
@@ -105,7 +128,7 @@ export interface CountryService {
   services: ServiceCategory[];
 }
 
-export type ViewState = 'LOGIN' | 'DASHBOARD' | 'FINANCE' | 'WALLET' | 'SOCIAL' | 'PAY' | 'SERVICES' | 'SERVICE_PAYMENT' | 'TRANSPORT' | 'MESSAGES' | 'DISCOVER' | 'AI';
+export type ViewState = 'LOGIN' | 'DASHBOARD' | 'FINANCE' | 'WALLET' | 'SOCIAL' | 'PAY' | 'SERVICES' | 'SERVICE_PAYMENT' | 'TRANSPORT' | 'MESSAGES' | 'DISCOVER' | 'AI' | 'SIM' | 'REWARDS';
 
 export interface AppViewProps {
   user: Leader;

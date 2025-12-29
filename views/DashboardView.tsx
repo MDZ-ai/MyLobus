@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { AppViewProps } from '../types';
+import { MOCK_NEWS } from '../constants';
 import { 
-  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, LogOut, CheckCircle2
+  Plus, Wallet, Bell, Search, CreditCard, PiggyBank, Shield, LayoutGrid, Bus, Zap, Loader2, X, AlertCircle, Moon, Sun, FileText, LogOut, CheckCircle2, Smartphone, Newspaper, Gamepad2, Trophy
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
 
@@ -109,7 +110,7 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                   {[
                       { icon: Zap, label: 'Invertir', action: () => setView('FINANCE') },
                       { icon: Bus, label: 'Transporte', action: () => setView('TRANSPORT') },
-                      { icon: Shield, label: 'Seguros', action: () => setActiveModal('INSURANCE') },
+                      { icon: Smartphone, label: 'Mi SIM', action: () => setView('SIM') },
                       { icon: LayoutGrid, label: 'Servicios', action: () => setView('SERVICES') },
                   ].map((op, i) => (
                       <button 
@@ -125,6 +126,31 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                   ))}
               </div>
           </div>
+      </div>
+
+      {/* JUEGA Y GANA BANNER */}
+      <div className="px-4 mt-6">
+          <button 
+            onClick={() => { playSound('click'); setView('REWARDS'); }}
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-[24px] p-1 shadow-lg group active:scale-98 transition-transform"
+          >
+              <div className="bg-white/10 backdrop-blur-sm rounded-[20px] p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-purple-600 shadow-sm group-hover:scale-110 transition-transform">
+                          <Gamepad2 size={28} />
+                      </div>
+                      <div className="text-left text-white">
+                          <h3 className="font-extrabold text-lg leading-tight">Juega y Gana</h3>
+                          <p className="text-xs font-medium opacity-90 flex items-center gap-1">
+                              <Trophy size={12} className="text-yellow-300 fill-yellow-300" /> Premios Diarios
+                          </p>
+                      </div>
+                  </div>
+                  <div className="bg-white/20 p-2 rounded-full">
+                      <Plus size={20} className="text-white" />
+                  </div>
+              </div>
+          </button>
       </div>
 
       {/* --- FINANZAS --- */}
@@ -176,26 +202,28 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                   <p className="text-xs text-gray-400">+12% este mes</p>
               </div>
           </div>
-
-          {/* Servicios y Seguros (Clickable) */}
-          <div onClick={() => setActiveModal('INSURANCE')} className="bg-white dark:bg-slate-800 rounded-[24px] border border-gray-200 dark:border-slate-700 shadow-sm p-5 cursor-pointer active:scale-98 transition-transform group">
-              <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-gray-100 dark:bg-slate-700 rounded-lg group-hover:bg-green-50 group-hover:text-green-600 transition-colors"><Shield size={18} className="text-lobus-primaryDark dark:text-gray-300"/></div>
-                  <h3 className="font-bold text-lobus-primaryDark dark:text-white">Seguros Activos</h3>
-              </div>
-               {user.policies && user.policies.length > 0 ? (
-                      user.policies.map(policy => (
-                        <div key={policy.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-700/50 rounded-xl mb-2 last:mb-0">
-                            <div>
-                                <h3 className="font-bold text-lobus-primaryDark dark:text-white text-sm">{policy.name}</h3>
-                                <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold mt-0.5">Vence: {policy.expiry}</p>
-                            </div>
-                            <span className="text-[10px] font-bold text-white bg-green-500 px-2 py-0.5 rounded-md">ACTIVO</span>
-                        </div>
-                      ))
-                  ) : (
-                      <p className="text-sm text-gray-400">Sin seguros contratados.</p>
-                  )}
+      </div>
+      
+      {/* --- NOTICIAS LOBUS (News Section) --- */}
+      <div className="px-4 mt-8">
+          <h3 className="text-lobus-primaryDark dark:text-white font-extrabold text-lg px-2 mb-4 flex items-center gap-2">
+             <Newspaper size={20} /> Noticias Unión
+          </h3>
+          <div className="space-y-4">
+              {MOCK_NEWS.map(news => (
+                  <div key={news.id} className="bg-white dark:bg-slate-800 p-4 rounded-[24px] shadow-sm border border-gray-100 dark:border-slate-700 flex gap-4 items-center">
+                      <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gray-200 overflow-hidden">
+                          <img src={news.image} alt="News" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1">
+                          <div className={`text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full inline-block mb-1 ${news.color}`}>
+                              {news.category}
+                          </div>
+                          <h4 className="text-sm font-bold text-lobus-primaryDark dark:text-white leading-tight mb-1">{news.title}</h4>
+                          <p className="text-[10px] font-bold text-gray-400">{news.time}</p>
+                      </div>
+                  </div>
+              ))}
           </div>
       </div>
       

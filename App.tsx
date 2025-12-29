@@ -13,6 +13,8 @@ import WalletView from './views/WalletView';
 import MessagesView from './views/MessagesView';
 import DiscoverView from './views/DiscoverView';
 import AIView from './views/AIView';
+import SimView from './views/SimView';
+import RewardsView from './views/RewardsView';
 import { playSound } from './utils/sound';
 
 const App: React.FC = () => {
@@ -83,6 +85,8 @@ const App: React.FC = () => {
       case 'MESSAGES': return <MessagesView {...props} />;
       case 'DISCOVER': return <DiscoverView {...props} />;
       case 'AI': return <AIView user={user} />;
+      case 'SIM': return <SimView {...props} />;
+      case 'REWARDS': return <RewardsView {...props} />;
       default: return <DashboardView {...props} />;
     }
   };

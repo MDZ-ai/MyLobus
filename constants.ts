@@ -1,8 +1,6 @@
-import { Leader, TransportRoute, StockData, CountryService, Parcel, UtilityContract, InsurancePolicy, Message, Document } from './types';
+import { Leader, TransportRoute, StockData, CountryService, Parcel, UtilityContract, InsurancePolicy, Message, Document, NewsItem } from './types';
 
 // --- CONFIGURACIÓN DE MARCA ---
-// Usamos un SVG Data URI para garantizar que el logo cargue instantáneamente y sin errores de ruta.
-// Diseño: Fondo Amarillo Lobus (#FFD300) con Silueta de Lobo Obsidian (#003882)
 export const BRAND_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImcIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcDojRkZEMzAwO3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcDojRjU5RTBCO3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMjgiIGZpbGw9InVybCgjZykiLz48cGF0aCBkPSJNMjU2IDk2TDEwNCA0MTZMMjU2IDM0NEw0MDggNDE2TDI1NiA5NloiIGZpbGw9IiMwMDM4ODIiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIxOTIiIHI9IjIwIiBmaWxsPSIjRkZEMzAwIi8+PC9zdmc+";
 // -----------------------------
 
@@ -37,21 +35,48 @@ const MOCK_DOCUMENTS: Document[] = [
   { id: 'd3', name: 'Patente de Conducir', type: 'DRIVING', number: 'LIC-772819', expiry: '01/2032', color: 'bg-gradient-to-br from-pink-500 to-rose-600' },
 ];
 
+export const MOCK_NEWS: NewsItem[] = [
+    { id: 'n1', category: 'Economía', title: 'El Banco Central Lobus anuncia subida de tipos de interés al 4%.', time: 'Hace 2h', image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=300&auto=format', color: 'bg-yellow-100 text-yellow-700' },
+    { id: 'n2', category: 'Tecnología', title: 'País Pingüino inaugura el servidor de hielo cuántico.', time: 'Hace 5h', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=300&auto=format', color: 'bg-cyan-100 text-cyan-700' },
+    { id: 'n3', category: 'Transporte', title: 'Nuevo HyperLoop conectará País Oso con la capital en 10 min.', time: 'Ayer', image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=300&auto=format', color: 'bg-purple-100 text-purple-700' },
+    { id: 'n4', category: 'Sucesos', title: 'Descubren nueva especie de Micelio luminoso en País Hongo.', time: 'Ayer', image: 'https://images.unsplash.com/photo-1629814498776-692d770c0c6e?q=80&w=300&auto=format', color: 'bg-green-100 text-green-700' },
+];
+
 export const LEADERS: Leader[] = [
   { 
       id: '1', handle: '@bibubib', name: 'Bibu Bib', country: 'País Lobito', password: 'admin', pin: '1234', rank: 'Omnipotente', balance: 999999999, avatarColor: 'bg-yellow-500', 
-      bio: 'Presidente de la Unión Lobus.', transactions: [...INITIAL_TRANSACTIONS], parcels: MOCK_PARCELS, utilities: MOCK_UTILITIES, policies: MOCK_POLICIES, messages: MOCK_MESSAGES, documents: MOCK_DOCUMENTS
+      bio: 'Presidente de la Unión Lobus.', transactions: [...INITIAL_TRANSACTIONS], parcels: MOCK_PARCELS, utilities: MOCK_UTILITIES, policies: MOCK_POLICIES, messages: MOCK_MESSAGES, documents: MOCK_DOCUMENTS,
+      sim: { phoneNumber: '+60 666 999 001', provider: 'LoboTel', planName: 'Plan Presidencial', dataTotalGB: 999, dataUsedGB: 124, minutesUsed: 450, smsUsed: 12, balance: 0, nextRenewal: '01/01/2030', roaming: true }
   },
   { 
       id: '2', handle: '@lobitopeludito', name: 'Lobito Peludito', country: 'País Lobito', password: 'lobo', pin: '0', rank: 'Máximo', balance: 50000000, avatarColor: 'bg-purple-500', 
-      bio: 'Vicepresidente de la Unión Lobus.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] 
+      bio: 'Vicepresidente de la Unión Lobus.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+60 777 888 222', provider: 'LoboTel', planName: 'Plan Élite 5G', dataTotalGB: 200, dataUsedGB: 150, minutesUsed: 89, smsUsed: 0, balance: 50, nextRenewal: '15/11/2025', roaming: true }
   },
-  { id: '3', handle: '@osopepe', name: 'Oso Pepe', country: 'País Oso', password: 'oso', pin: '1111', rank: 'Industrial', balance: 25000000, avatarColor: 'bg-blue-600', bio: 'Presidente País Oso.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
-  { id: '4', handle: '@higor', name: 'Higor Panzón', country: 'País Plingor', password: 'dragon', pin: '3333', rank: 'Élite', balance: 10000000, avatarColor: 'bg-red-500', bio: 'Presidente País Plingor.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
-  { id: '5', handle: '@capy', name: 'Capy Capibara', country: 'País Capy', password: 'chill', pin: '2222', rank: 'Estable', balance: 5000000, avatarColor: 'bg-green-500', bio: 'Presidente País Capy.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
-  { id: '6', handle: '@luigi', name: 'Luigi Mario', country: 'País Hongo', password: 'verde', pin: '4444', rank: 'Medio', balance: 1000000, avatarColor: 'bg-indigo-500', bio: 'Presidente País Hongo.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
-  { id: '7', handle: '@perrito', name: 'Perrito', country: 'País Perrito', password: 'guau', pin: '5555', rank: 'Modesto', balance: 500000, avatarColor: 'bg-orange-400', bio: 'Ciudadano.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
-  { id: '8', handle: '@pingui', name: 'Pingüino', country: 'País Pingüino', password: 'hielo', pin: '6666', rank: 'Tecnológico', balance: 75000000, avatarColor: 'bg-cyan-400', bio: 'Presidente País Pingüino.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [] },
+  { 
+      id: '3', handle: '@osopepe', name: 'Oso Pepe', country: 'País Oso', password: 'oso', pin: '1111', rank: 'Industrial', balance: 25000000, avatarColor: 'bg-blue-600', bio: 'Presidente País Oso.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+34 661 222 333', provider: 'OsoCel', planName: 'Tarifa Miel Ilimitada', dataTotalGB: 100, dataUsedGB: 12, minutesUsed: 10, smsUsed: 55, balance: 20, nextRenewal: '05/11/2025', roaming: false }
+  },
+  { 
+      id: '4', handle: '@higor', name: 'Higor Panzón', country: 'País Plingor', password: 'dragon', pin: '3333', rank: 'Élite', balance: 10000000, avatarColor: 'bg-red-500', bio: 'Presidente País Plingor.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+99 123 456 789', provider: 'GagaNet', planName: 'Fuego Rápido', dataTotalGB: 50, dataUsedGB: 48, minutesUsed: 300, smsUsed: 2, balance: 5, nextRenewal: '30/10/2025', roaming: true }
+  },
+  { 
+      id: '5', handle: '@capy', name: 'Capy Capibara', country: 'País Capy', password: 'chill', pin: '2222', rank: 'Estable', balance: 5000000, avatarColor: 'bg-green-500', bio: 'Presidente País Capy.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+55 999 000 111', provider: 'StarMushroom', planName: 'Chill Data', dataTotalGB: 20, dataUsedGB: 5, minutesUsed: 0, smsUsed: 0, balance: 15, nextRenewal: '12/11/2025', roaming: false }
+  },
+  { 
+      id: '6', handle: '@luigi', name: 'Luigi Mario', country: 'País Hongo', password: 'verde', pin: '4444', rank: 'Medio', balance: 1000000, avatarColor: 'bg-indigo-500', bio: 'Presidente País Hongo.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+1 555 0199', provider: 'StarMushroom', planName: 'Tubería Digital', dataTotalGB: 30, dataUsedGB: 2, minutesUsed: 15, smsUsed: 100, balance: 10, nextRenewal: '01/12/2025', roaming: true }
+  },
+  { 
+      id: '7', handle: '@perrito', name: 'Perrito', country: 'País Perrito', password: 'guau', pin: '5555', rank: 'Modesto', balance: 500000, avatarColor: 'bg-orange-400', bio: 'Ciudadano.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+30 111 222 333', provider: 'LoboTel', planName: 'Plan Hueso', dataTotalGB: 10, dataUsedGB: 9.5, minutesUsed: 500, smsUsed: 20, balance: 2, nextRenewal: '28/10/2025', roaming: false }
+  },
+  { 
+      id: '8', handle: '@pingui', name: 'Pingüino', country: 'País Pingüino', password: 'hielo', pin: '6666', rank: 'Tecnológico', balance: 75000000, avatarColor: 'bg-cyan-400', bio: 'Presidente País Pingüino.', transactions: [...INITIAL_TRANSACTIONS], parcels: [], utilities: [], policies: [], messages: [], documents: [],
+      sim: { phoneNumber: '+00 777 111 222', provider: 'GagaNet', planName: 'Fibra Polar', dataTotalGB: 500, dataUsedGB: 200, minutesUsed: 60, smsUsed: 10, balance: 100, nextRenewal: '20/11/2025', roaming: true }
+  },
 ];
 
 export const ROUTES: TransportRoute[] = [
