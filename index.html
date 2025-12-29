@@ -11,8 +11,8 @@
     <meta name="apple-mobile-web-app-title" content="MyLobus" />
     <meta name="mobile-web-app-capable" content="yes" />
     
-    <!-- IMPORTANT: Use relative path for manifest -->
-    <link rel="manifest" href="./manifest.json" />
+    <!-- Usamos ruta absoluta para asegurar que cargue desde la raíz (public folder) -->
+    <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/616/616408.png">
     
     <title>MyLobus | Vercel Edition</title>
@@ -83,7 +83,7 @@
         color: #003882;
         -webkit-font-smoothing: antialiased;
         overscroll-behavior: none;
-        user-select: none; /* Make it feel native, no text selection */
+        user-select: none;
       }
       ::-webkit-scrollbar {
         width: 0px;
@@ -91,7 +91,7 @@
       }
       input {
         color-scheme: light;
-        user-select: text; /* Allow text selection in inputs */
+        user-select: text;
       }
       .dark input {
         color-scheme: dark;
@@ -105,6 +105,26 @@
         30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
         40%, 60% { transform: translate3d(4px, 0, 0); }
       }
+      /* Loading State Style */
+      #root:empty {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #003882;
+        z-index: 9999;
+      }
+      #root:empty::after {
+        content: 'LOBUS';
+        color: white;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 900;
+        font-size: 2rem;
+        letter-spacing: -1px;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse { 50% { opacity: 0.5; } }
     </style>
   <script type="importmap">
 {
@@ -129,10 +149,10 @@
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then(registration => {
-              console.log('SW registered with scope:', registration.scope);
+              console.log('SW registered:', registration.scope);
             })
-            .catch(registrationError => {
-              console.log('SW registration failed: ', registrationError);
+            .catch(err => {
+              console.log('SW registration failed:', err);
             });
         });
       }
