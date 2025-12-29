@@ -1,8 +1,9 @@
 import { Leader, TransportRoute, StockData, CountryService, Parcel, UtilityContract, InsurancePolicy, Message, Document } from './types';
 
 // --- CONFIGURACIÓN DE MARCA ---
-// La imagen "logo.png" debe estar en la carpeta "public" del proyecto.
-export const BRAND_LOGO = "/logo.png"; 
+// Usamos un SVG Data URI para garantizar que el logo cargue instantáneamente y sin errores de ruta.
+// Diseño: Fondo Amarillo Lobus (#FFD300) con Silueta de Lobo Obsidian (#003882)
+export const BRAND_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImcIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcDojRkZEMzAwO3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcDojRjU5RTBCO3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMjgiIGZpbGw9InVybCgjZykiLz48cGF0aCBkPSJNMjU2IDk2TDEwNCA0MTZMMjU2IDM0NEw0MDggNDE2TDI1NiA5NloiIGZpbGw9IiMwMDM4ODIiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIxOTIiIHI9IjIwIiBmaWxsPSIjRkZEMzAwIi8+PC9zdmc+";
 // -----------------------------
 
 const INITIAL_TRANSACTIONS = [

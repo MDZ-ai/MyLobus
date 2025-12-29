@@ -94,9 +94,9 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
       <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-12 pb-16 relative shadow-sm">
         <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-3">
-                 {/* MINI LOGO EN CABECERA */}
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
-                     <img src={BRAND_LOGO} alt="Logo" className="w-6 h-6 object-contain" />
+                 {/* MINI LOGO EN CABECERA - MÁS GRANDE */}
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-sm">
+                     <img src={BRAND_LOGO} alt="Logo" className="w-8 h-8 object-contain" />
                 </div>
                 <div>
                     <p className="text-lobus-primaryDark font-semibold text-sm">Es un placer verte,</p>
@@ -308,8 +308,8 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
                         </div>
                         
                         <div className="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-[24px] mb-6 text-center">
-                            <div className="w-16 h-16 bg-white dark:bg-slate-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm">
-                                <img src={BRAND_LOGO} alt="App Logo" className="w-10 h-10 object-contain" />
+                            <div className="w-20 h-20 bg-white dark:bg-slate-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm border border-blue-100 dark:border-slate-500">
+                                <img src={BRAND_LOGO} alt="App Logo" className="w-12 h-12 object-contain" />
                             </div>
                             <h3 className="font-bold text-lobus-primaryDark dark:text-white mb-2">Instalar Aplicación Web</h3>
                             <p className="text-sm text-lobus-neutral dark:text-gray-300">

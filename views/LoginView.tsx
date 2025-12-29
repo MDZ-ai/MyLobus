@@ -110,7 +110,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             <div className="absolute inset-0 border-[6px] border-white/20 rounded-full animate-ripple"></div>
             <div className="absolute inset-0 border-[6px] border-lobus-primary/50 rounded-full animate-ripple" style={{animationDelay: '0.6s'}}></div>
             <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center relative z-10 border-4 border-lobus-primary shadow-lg animate-pulse-slow">
-                 <Fingerprint size={56} className="text-lobus-primaryDark" />
+                 <img src={BRAND_LOGO} alt="Lobus Security" className="w-16 h-16 object-contain" />
             </div>
         </div>
         <h2 className="text-3xl font-extrabold text-white mt-8 mb-2 animate-slide-up">Lobus ID</h2>
@@ -123,22 +123,22 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     <div className="h-full flex flex-col bg-white animate-enter relative overflow-hidden">
       
       {/* Top Banner Style */}
-      <div className="bg-lobus-primary h-[35%] rounded-b-[40px] relative flex flex-col items-center justify-center shadow-lg">
-          <div className="bg-white p-4 rounded-3xl shadow-xl mb-4">
-               {/* LOGO REAL AQUÍ */}
-               <img src={BRAND_LOGO} alt="Lobus Logo" className="w-12 h-12 object-contain" />
+      <div className="bg-lobus-primary h-[40%] rounded-b-[48px] relative flex flex-col items-center justify-center shadow-lg pb-8">
+          <div className="bg-white p-5 rounded-[24px] shadow-2xl mb-5 animate-pop">
+               {/* LOGO REAL GRANDE */}
+               <img src={BRAND_LOGO} alt="Lobus Logo" className="w-24 h-24 object-contain" />
           </div>
-          <h1 className="text-4xl font-black text-lobus-primaryDark tracking-tight text-center leading-none">
+          <h1 className="text-5xl font-black text-lobus-primaryDark tracking-tight text-center leading-none">
             My<span className="text-white drop-shadow-md">Lobus</span>
           </h1>
-          <p className="text-lobus-primaryDark font-bold mt-2 text-sm uppercase tracking-widest opacity-80">Unión Lobus</p>
+          <p className="text-lobus-primaryDark font-bold mt-3 text-sm uppercase tracking-widest opacity-80 border border-lobus-primaryDark px-3 py-1 rounded-full">Sovereign OS v100</p>
       </div>
 
-      <div className="flex-1 flex flex-col justify-start max-w-sm mx-auto w-full z-10 p-8 -mt-8">
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl border border-gray-100">
+      <div className="flex-1 flex flex-col justify-start max-w-sm mx-auto w-full z-10 p-8 -mt-12">
+        <div className="bg-white rounded-[32px] p-8 shadow-2xl border border-gray-100">
             <h2 className="text-xl font-bold text-lobus-primaryDark text-center mb-6">Acceso Ciudadano</h2>
             
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 ml-3">IDENTIFICADOR</label>
                 <div className={`relative group transition-all duration-300 ${error && !handle ? 'shake' : ''}`}>
@@ -186,7 +186,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 <button 
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-lobus-primaryDark text-white font-bold text-lg py-5 rounded-xl shadow-lg shadow-lobus-primaryDark/20 flex items-center justify-center gap-3 transition-all active:scale-[0.97] hover:bg-blue-900 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full bg-lobus-primaryDark text-white font-bold text-lg py-5 rounded-2xl shadow-lg shadow-lobus-primaryDark/20 flex items-center justify-center gap-3 transition-all active:scale-[0.97] hover:bg-blue-900 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                     {isLoading ? <Loader2 className="animate-spin text-lobus-primary" /> : <>Entrar <ArrowRight size={20} strokeWidth={3} className="text-lobus-primary" /></>}
                 </button>
@@ -194,8 +194,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             </form>
             
             <div className="mt-6 text-center">
-                <p className="text-xs text-gray-400 font-medium">¿Olvidaste tus credenciales?</p>
-                <button className="text-xs font-bold text-lobus-primaryDark mt-1 border-b border-lobus-primaryDark">Recuperar Acceso Lobus ID</button>
+                <button className="text-xs font-bold text-lobus-primaryDark hover:text-lobus-primary transition-colors">¿Olvidaste tus credenciales?</button>
             </div>
         </div>
       </div>
@@ -209,7 +208,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                   <Download size={16} /> Instalar Aplicación
               </button>
           )}
-          <p className="text-[10px] text-gray-300 font-bold">Unión Lobus • Sistema Operativo Soberano v100</p>
+          <p className="text-[10px] text-gray-300 font-bold">Unión Lobus • Sistema Operativo Soberano</p>
       </div>
 
       {/* INSTALL HELP MODAL */}
@@ -225,9 +224,9 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 </div>
                 
                 <div className="bg-blue-50 p-6 rounded-[24px] mb-6 text-center">
-                    <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm">
+                    <div className="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-sm border border-blue-100">
                          {/* LOGO EN MODAL TAMBIÉN */}
-                        <img src={BRAND_LOGO} alt="App Logo" className="w-10 h-10 object-contain" />
+                        <img src={BRAND_LOGO} alt="App Logo" className="w-12 h-12 object-contain" />
                     </div>
                     <h3 className="font-bold text-lobus-primaryDark mb-2">Instalar Aplicación Web</h3>
                     <p className="text-sm text-lobus-neutral">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppViewProps } from '../types';
 import { ArrowLeft, Search, Zap, Globe, Shield, CreditCard, Sparkles, LayoutGrid, Heart, TrendingUp, Bus, Download } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import { BRAND_LOGO } from '../constants';
 
 const DiscoverView: React.FC<AppViewProps> = ({ setView }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -95,8 +96,8 @@ const DiscoverView: React.FC<AppViewProps> = ({ setView }) => {
                         <h2 className="text-2xl font-black mb-1">MyLobus OS</h2>
                         <p className="opacity-80 text-sm font-medium w-3/4">Instala la aplicación en tu dispositivo para una experiencia completa.</p>
                     </div>
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-lobus-primaryDark shadow-lg group-hover:scale-110 transition-transform">
-                        <Download size={24} />
+                    <div className="w-16 h-16 bg-white rounded-[20px] flex items-center justify-center text-lobus-primaryDark shadow-lg group-hover:scale-110 transition-transform">
+                        <img src={BRAND_LOGO} alt="App Logo" className="w-10 h-10 object-contain" />
                     </div>
                 </div>
             </div>
