@@ -77,6 +77,15 @@ export interface NewsItem {
   color: string;
 }
 
+export interface CryptoAsset {
+    symbol: string;
+    name: string;
+    amount: number;
+    valueUSD: number;
+    change24h: number;
+    color: string;
+}
+
 export interface Leader {
   id: string;
   handle: string;
@@ -95,6 +104,7 @@ export interface Leader {
   messages: Message[];
   documents: Document[];
   sim: SimData;
+  crypto: CryptoAsset[];
 }
 
 export interface StockData {

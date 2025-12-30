@@ -46,7 +46,7 @@ const TransportView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
       <div className="pb-40">
         
         {/* Header - EXACT MATCH to Dashboard */}
-        <div className="pt-14 px-6 pb-6 bg-lobus-bg dark:bg-slate-900 sticky top-0 z-20">
+        <div className="pt-28 px-6 pb-6 bg-lobus-bg dark:bg-slate-900 sticky top-0 z-20">
              <div className="flex justify-between items-center mb-6">
                 <div>
                     <h2 className="text-lobus-neutral dark:text-gray-400 font-medium text-sm">Transporte</h2>

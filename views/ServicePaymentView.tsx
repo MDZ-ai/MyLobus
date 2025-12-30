@@ -75,7 +75,7 @@ const ServicePaymentView: React.FC<AppViewProps> = ({ user, updateBalance, setVi
     <div className="h-full flex flex-col bg-lobus-bg animate-enter overflow-hidden relative">
       
       {/* Header */}
-      <div className="pt-14 px-6 pb-6 flex-shrink-0 z-20">
+      <div className="pt-28 px-6 pb-6 flex-shrink-0 z-20">
          <button onClick={() => setView('DASHBOARD')} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark transition-colors font-bold text-sm">
              <ArrowLeft size={18} /> Volver
          </button>

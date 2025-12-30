@@ -183,7 +183,7 @@ const PayView: React.FC<AppViewProps> = ({ user, updateBalance, setView }) => {
     <div className="h-full flex flex-col bg-lobus-bg dark:bg-slate-900 animate-enter overflow-hidden relative transition-colors duration-300">
       
       {/* HEADER */}
-      <div className="pt-12 px-6 pb-2 flex-shrink-0 z-20 bg-lobus-bg dark:bg-slate-900">
+      <div className="pt-28 px-6 pb-2 flex-shrink-0 z-20 bg-lobus-bg dark:bg-slate-900">
          {mode !== 'HOME' && (
              <button onClick={resetState} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark dark:hover:text-white transition-colors font-bold text-sm">
                  <ArrowRight className="rotate-180" size={18} /> Volver

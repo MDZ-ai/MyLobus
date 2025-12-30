@@ -64,7 +64,7 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
       <div className="pb-40"> 
       
       {/* HEADER SECTION */}
-      <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-12 pb-16 relative shadow-sm">
+      <div className="bg-lobus-primary dark:bg-yellow-500 rounded-b-[32px] px-6 pt-28 pb-16 relative shadow-sm">
         <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-3">
                 <div>
@@ -212,8 +212,12 @@ const DashboardView: React.FC<AppViewProps> = ({ user, updateBalance, setView, i
           <div className="space-y-4">
               {MOCK_NEWS.map(news => (
                   <div key={news.id} className="bg-white dark:bg-slate-800 p-4 rounded-[24px] shadow-sm border border-gray-100 dark:border-slate-700 flex gap-4 items-center">
-                      <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gray-200 overflow-hidden">
-                          <img src={news.image} alt="News" className="w-full h-full object-cover" />
+                      <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gray-200 overflow-hidden relative">
+                          <img src={news.image} alt="News" className="w-full h-full object-cover absolute inset-0" onError={(e) => {
+                              // Fallback if image fails
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              (e.target as HTMLImageElement).parentElement!.style.backgroundColor = '#CBD5E1';
+                          }} />
                       </div>
                       <div className="flex-1">
                           <div className={`text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full inline-block mb-1 ${news.color}`}>

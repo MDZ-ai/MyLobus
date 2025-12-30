@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { AppViewProps } from '../types';
-import { ArrowLeft, Gift, Trophy, Star, Gamepad2, Coins, CalendarDays, Loader2, CheckCircle2, Ticket } from 'lucide-react';
+import { ArrowLeft, Gift, Trophy, Star, Gamepad2, Coins, CalendarDays, Loader2, CheckCircle2, Ticket, Disc } from 'lucide-react';
 import { playSound } from '../utils/sound';
 
 const RewardsView: React.FC<AppViewProps> = ({ user, setView, updateBalance }) => {
   const [activeTab, setActiveTab] = useState<'DAILY' | 'GAMES'>('GAMES');
   const [loading, setLoading] = useState(false);
+  
+  // Scratch State
   const [scratchRevealed, setScratchRevealed] = useState(false);
   const [scratchPrize, setScratchPrize] = useState(0);
+
+  // Wheel State
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [rotation, setRotation] = useState(0);
 
   // Daily Reward State (Mocked)
   const [dailyClaimed, setDailyClaimed] = useState(false);
@@ -29,7 +35,6 @@ const RewardsView: React.FC<AppViewProps> = ({ user, setView, updateBalance }) =
       setLoading(true);
       playSound('pay');
       
-      // Cost to play
       updateBalance(-5, "Ticket Rasca y Gana", "Costo de participación");
 
       setTimeout(() => {
@@ -53,11 +58,45 @@ const RewardsView: React.FC<AppViewProps> = ({ user, setView, updateBalance }) =
       playSound('click');
   };
 
+  const spinWheel = () => {
+      if (isSpinning || loading) return;
+      if (user.balance < 10) {
+          alert("Necesitas 10€ para girar la ruleta.");
+          return;
+      }
+
+      setIsSpinning(true);
+      setLoading(true);
+      updateBalance(-10, "Giro Ruleta", "Costo de participación");
+      playSound('pay');
+
+      const spins = 5;
+      const randomDegrees = Math.floor(Math.random() * 360);
+      const totalRotation = rotation + (360 * spins) + randomDegrees;
+      
+      setRotation(totalRotation);
+
+      setTimeout(() => {
+          setIsSpinning(false);
+          setLoading(false);
+          // Simple logic: random prize based on spin (mocked for simplicity)
+          const prize = Math.random() > 0.5 ? Math.floor(Math.random() * 100) : 0;
+          
+          if (prize > 0) {
+              playSound('success');
+              alert(`¡Felicidades! Ganaste ${prize}€`);
+              updateBalance(prize, "Premio Ruleta", "¡Ganaste!");
+          } else {
+              playSound('error');
+          }
+      }, 4000); // 4s spin duration
+  };
+
   return (
     <div className="flex flex-col h-full bg-lobus-bg dark:bg-slate-900 animate-enter transition-colors duration-300 overflow-hidden">
         
         {/* Header */}
-        <div className="pt-14 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm flex-shrink-0 z-20">
+        <div className="pt-28 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm flex-shrink-0 z-20">
             <button onClick={() => setView('DASHBOARD')} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark dark:hover:text-white transition-colors font-bold text-sm">
                 <ArrowLeft size={18} /> Volver
             </button>
@@ -140,18 +179,56 @@ const RewardsView: React.FC<AppViewProps> = ({ user, setView, updateBalance }) =
                         </div>
                     </div>
 
+                    {/* Wheel of Fortune */}
+                    <div className="bg-white dark:bg-slate-800 rounded-[32px] p-6 shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col items-center overflow-hidden relative">
+                         <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center text-pink-600 dark:text-pink-400">
+                                <Disc size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg text-lobus-primaryDark dark:text-white">Ruleta Fortuna</h3>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">Costo: 10€ / Giro</p>
+                            </div>
+                        </div>
+
+                        <div className="relative w-48 h-48 mb-6">
+                             {/* Pointer */}
+                             <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-20 w-4 h-6 bg-lobus-primaryDark dark:bg-white clip-triangle" style={{clipPath: 'polygon(50% 100%, 0 0, 100% 0)'}}></div>
+                             
+                             {/* Wheel */}
+                             <div 
+                                className="w-full h-full rounded-full border-4 border-lobus-primary bg-lobus-bg dark:bg-slate-700 relative overflow-hidden shadow-inner transition-transform duration-[4000ms] cubic-bezier(0.2, 0.8, 0.2, 1)"
+                                style={{ transform: `rotate(${rotation}deg)` }}
+                             >
+                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 rounded-full"></div>
+                                 {/* Segments (Simplified visual representation) */}
+                                 <div className="absolute w-full h-full" style={{background: 'conic-gradient(#FFD300 0deg 90deg, #00A3E0 90deg 180deg, #EF4444 180deg 270deg, #10B981 270deg 360deg)'}}></div>
+                                 <div className="absolute inset-2 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center">
+                                      <div className="w-4 h-4 rounded-full bg-lobus-primaryDark dark:bg-white"></div>
+                                 </div>
+                             </div>
+                        </div>
+
+                        <button 
+                            onClick={spinWheel} 
+                            disabled={isSpinning || loading}
+                            className="w-full py-3 bg-lobus-primaryDark dark:bg-white text-white dark:text-lobus-primaryDark rounded-xl font-bold shadow-lg active:scale-95 transition-all disabled:opacity-50"
+                        >
+                            {isSpinning ? 'Girando...' : 'Girar Ahora'}
+                        </button>
+                    </div>
+
                     {/* Lotto Game Placeholder */}
-                    <div className="bg-white dark:bg-slate-800 rounded-[32px] p-6 shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden">
+                    <div className="bg-white dark:bg-slate-800 rounded-[32px] p-6 shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden opacity-70">
                         <div className="flex items-center gap-4">
                             <div className="w-14 h-14 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center text-green-600 dark:text-green-400 text-xl font-bold border border-green-100 dark:border-green-800/30">
                                 777
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg text-lobus-primaryDark dark:text-white">Lotería Lobus</h3>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">Próximo sorteo: 20:00</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">Próximamente</p>
                             </div>
                         </div>
-                        <button className="mt-4 w-full py-3 bg-lobus-bg dark:bg-slate-700 rounded-xl font-bold text-sm text-lobus-neutral dark:text-white">Comprar Boleto (Próximamente)</button>
                     </div>
                 </>
             ) : (

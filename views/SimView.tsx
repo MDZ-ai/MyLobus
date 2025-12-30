@@ -35,7 +35,7 @@ const SimView: React.FC<AppViewProps> = ({ user, setView, updateBalance }) => {
     <div className="flex flex-col h-full bg-lobus-bg dark:bg-slate-900 animate-enter transition-colors duration-300 overflow-hidden">
       
       {/* Header - Fixed Height */}
-      <div className="pt-14 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm flex-shrink-0 z-20">
+      <div className="pt-28 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm flex-shrink-0 z-20">
          <button onClick={() => setView('DASHBOARD')} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark dark:hover:text-white transition-colors font-bold text-sm">
              <ArrowLeft size={18} /> Volver
          </button>

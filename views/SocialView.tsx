@@ -39,7 +39,7 @@ const SocialView: React.FC<SocialViewProps> = ({ currentUser, updateBalance }) =
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-lobus-bg">
-      <div className="p-6 pb-2 pt-10">
+      <div className="px-6 pb-2 pt-28">
         <header className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-extrabold text-lobus-text tracking-tight">Lobus Connect</h1>
             <div className="flex bg-white border border-lobus-border rounded-full p-1 shadow-sm">

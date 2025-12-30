@@ -30,7 +30,7 @@ const MessagesView: React.FC<AppViewProps> = ({ user, setView }) => {
     <div className="h-full overflow-y-auto bg-lobus-bg dark:bg-slate-900 animate-enter flex flex-col relative transition-colors duration-300">
       
       {/* Header */}
-      <div className="pt-14 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm z-20 flex-shrink-0 transition-colors">
+      <div className="pt-28 px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-[32px] shadow-sm z-20 flex-shrink-0 transition-colors">
          <button onClick={() => setView('DASHBOARD')} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark dark:hover:text-white transition-colors font-bold text-sm">
              <ArrowLeft size={18} /> Volver
          </button>
@@ -102,50 +102,45 @@ const MessagesView: React.FC<AppViewProps> = ({ user, setView }) => {
       {selectedMessage && (
           <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-lobus-primaryDark/30 backdrop-blur-md animate-enter">
              <div onClick={closeMessage} className="absolute inset-0" />
-             <div className="relative w-full max-w-sm h-[80%] sm:h-[600px] bg-white dark:bg-slate-800 rounded-t-[40px] sm:rounded-[40px] shadow-2xl animate-slide-up flex flex-col overflow-hidden transition-colors">
+             <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-t-[40px] sm:rounded-[40px] p-8 pb-12 shadow-2xl animate-slide-up h-[85vh] flex flex-col">
+                 <div className="w-16 h-1.5 bg-gray-200 dark:bg-slate-600 rounded-full mx-auto mb-6 flex-shrink-0" />
                  
-                 {/* Modal Header */}
-                 <div className="bg-lobus-bg dark:bg-slate-900 p-6 border-b border-gray-200 dark:border-slate-700 flex justify-between items-start rounded-t-[40px]">
+                 <div className="flex justify-between items-start mb-6 flex-shrink-0">
                      <div>
-                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
-                             {selectedMessage.date} • {selectedMessage.sender}
-                         </span>
-                         <h2 className="text-xl font-black text-lobus-primaryDark dark:text-white leading-tight">{selectedMessage.subject}</h2>
+                         <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{selectedMessage.date}</span>
+                         <h2 className="text-xl font-black text-lobus-primaryDark dark:text-white mt-1 leading-tight">{selectedMessage.subject}</h2>
                      </div>
-                     <button onClick={closeMessage} className="bg-white dark:bg-slate-700 p-2 rounded-full border border-gray-200 dark:border-slate-600">
-                         <X size={20} className="text-gray-500 dark:text-white" />
-                     </button>
+                     <button onClick={closeMessage} className="bg-gray-100 dark:bg-slate-700 dark:text-white p-2 rounded-full"><X size={20}/></button>
                  </div>
 
-                 {/* Modal Body */}
-                 <div className="p-8 overflow-y-auto flex-1 bg-white dark:bg-slate-800">
-                     {selectedMessage.isLegal && (
-                         <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900 rounded-xl p-3 flex items-center gap-3 mb-6">
-                             <FileBadge size={20} className="text-lobus-primaryDark dark:text-blue-300" />
-                             <span className="text-xs font-bold text-lobus-primaryDark dark:text-blue-300">Notificación Oficial Certificada</span>
-                         </div>
-                     )}
-                     
-                     <p className="text-lobus-primaryDark dark:text-gray-300 text-base leading-relaxed font-medium">
+                 <div className="flex items-center gap-3 mb-6 p-4 bg-lobus-bg dark:bg-slate-700 rounded-[20px] flex-shrink-0">
+                     <div className="w-10 h-10 bg-white dark:bg-slate-600 rounded-full flex items-center justify-center text-lobus-primaryDark dark:text-white font-bold border border-gray-200 dark:border-slate-500">
+                         {selectedMessage.sender[0]}
+                     </div>
+                     <div>
+                         <p className="text-xs font-bold text-gray-400 uppercase">De</p>
+                         <p className="font-bold text-sm text-lobus-primaryDark dark:text-white">{selectedMessage.sender}</p>
+                     </div>
+                 </div>
+
+                 <div className="flex-1 overflow-y-auto prose dark:prose-invert">
+                     <p className="text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
                          {selectedMessage.preview}
                          <br/><br/>
-                         Estimado ciudadano, esta es una notificación generada automáticamente por el sistema central de la Unión Lobus. Por favor, realice las gestiones necesarias antes de la fecha límite para evitar recargos administrativos.
+                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                          <br/><br/>
-                         Atentamente,<br/>
-                         {selectedMessage.sender}
+                         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                      </p>
                  </div>
 
-                 {/* Modal Footer */}
-                 <div className="p-6 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 flex gap-3">
-                     <button className="flex-1 py-4 rounded-xl font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                 <div className="pt-6 mt-4 border-t border-gray-100 dark:border-slate-700 flex gap-4 flex-shrink-0">
+                     <button className="flex-1 py-4 rounded-[24px] font-bold text-red-500 bg-red-50 dark:bg-red-900/30 flex items-center justify-center gap-2 hover:bg-red-100 transition-colors">
                          <Trash2 size={18} /> Eliminar
                      </button>
-                     <button onClick={closeMessage} className="flex-1 py-4 rounded-xl font-bold text-white bg-lobus-primaryDark hover:bg-lobus-primary hover:text-lobus-primaryDark transition-colors shadow-lg flex items-center justify-center gap-2">
-                         <Check size={18} /> Entendido
+                     <button onClick={closeMessage} className="flex-1 py-4 rounded-[24px] font-bold text-lobus-primaryDark bg-lobus-primary hover:bg-yellow-400 flex items-center justify-center gap-2 transition-colors shadow-lg">
+                         <Check size={18} /> Aceptar
                      </button>
                  </div>
-
              </div>
           </div>
       )}

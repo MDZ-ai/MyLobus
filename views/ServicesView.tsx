@@ -29,7 +29,7 @@ const ServicesView: React.FC<AppViewProps> = () => {
     <div className="h-full flex flex-col bg-lobus-bg dark:bg-slate-900 animate-enter overflow-hidden relative transition-colors duration-300">
       
       {/* Header */}
-      <div className="pt-14 px-6 pb-2 flex-shrink-0 z-20">
+      <div className="pt-28 px-6 pb-2 flex-shrink-0 z-20">
          <div className="flex items-center gap-3 mb-4">
              <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-lobus-border dark:border-slate-700 flex items-center justify-center shadow-sm text-2xl">
                  🌍

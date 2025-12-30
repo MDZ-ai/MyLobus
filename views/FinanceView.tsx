@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MOCK_STOCK_DATA_1D, MOCK_STOCK_DATA_1M, COMPANIES } from '../constants';
 import GlassCard from '../components/GlassCard';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Search, X, Loader2, ArrowUpRight, TrendingUp, TrendingDown, RefreshCcw, AlertCircle } from 'lucide-react';
+import { Search, X, Loader2, ArrowUpRight, TrendingUp, TrendingDown, RefreshCcw, AlertCircle, PieChart, ShoppingBag, Coffee, Car } from 'lucide-react';
 import { AppViewProps } from '../types';
 import { playSound } from '../utils/sound';
 
@@ -105,11 +105,18 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
     }
   };
 
+  // Mock Spending Data
+  const spendingCategories = [
+      { name: 'Compras', amount: 450, color: 'bg-pink-500', icon: ShoppingBag, percent: 45 },
+      { name: 'Ocio', amount: 120, color: 'bg-purple-500', icon: Coffee, percent: 12 },
+      { name: 'Transporte', amount: 80, color: 'bg-orange-500', icon: Car, percent: 8 },
+  ];
+
   return (
-    <div className="h-full overflow-y-auto bg-lobus-bg dark:bg-slate-900 p-6 pb-32 transition-colors duration-300">
+    <div className="h-full overflow-y-auto bg-lobus-bg dark:bg-slate-900 px-6 pt-28 pb-32 transition-colors duration-300">
       
       {/* Header */}
-      <header className="mb-6 mt-8 flex justify-between items-center">
+      <header className="mb-6 flex justify-between items-center">
         <div>
             <h1 className="text-2xl font-black text-lobus-obsidian dark:text-white">Bolsa Lobus</h1>
             <div className="flex items-center gap-2 text-[10px] text-lobus-neutral dark:text-gray-400 font-bold mt-1">
@@ -184,6 +191,33 @@ const FinanceView: React.FC<AppViewProps> = ({ user, updateBalance }) => {
              </button>
            ))}
         </div>
+      </div>
+
+      {/* Analytics Section (NEW) */}
+      <div className="mb-8">
+          <h3 className="text-lobus-obsidian dark:text-white font-bold text-lg mb-4 flex items-center gap-2">
+              <PieChart size={20} className="text-lobus-secondary" /> Análisis de Gastos
+          </h3>
+          <div className="bg-white dark:bg-slate-800 rounded-[32px] p-6 border border-lobus-border dark:border-slate-700 shadow-sm">
+              <div className="space-y-4">
+                  {spendingCategories.map((cat, i) => (
+                      <div key={i}>
+                          <div className="flex justify-between items-center mb-1">
+                              <div className="flex items-center gap-2">
+                                  <div className={`p-1.5 rounded-lg ${cat.color} text-white`}>
+                                      <cat.icon size={12} />
+                                  </div>
+                                  <span className="text-sm font-bold text-lobus-obsidian dark:text-white">{cat.name}</span>
+                              </div>
+                              <span className="text-sm font-bold text-lobus-neutral dark:text-gray-400">{cat.amount}€</span>
+                          </div>
+                          <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2">
+                              <div className={`h-2 rounded-full ${cat.color}`} style={{ width: `${cat.percent}%` }}></div>
+                          </div>
+                      </div>
+                  ))}
+              </div>
+          </div>
       </div>
 
       <h3 className="text-lobus-obsidian dark:text-white font-bold text-lg mb-4">Acciones Principales</h3>

@@ -59,7 +59,7 @@ const DiscoverView: React.FC<AppViewProps> = ({ setView }) => {
   return (
     <div className="h-full overflow-y-auto bg-lobus-bg dark:bg-slate-900 animate-enter flex flex-col transition-colors duration-300">
        {/* Header */}
-      <div className="pt-14 px-6 pb-6 bg-lobus-bg dark:bg-slate-900 flex-shrink-0 z-20">
+      <div className="pt-28 px-6 pb-6 bg-lobus-bg dark:bg-slate-900 flex-shrink-0 z-20">
          <button onClick={() => setView('DASHBOARD')} className="mb-4 flex items-center gap-2 text-gray-400 hover:text-lobus-primaryDark dark:hover:text-white transition-colors font-bold text-sm">
              <ArrowLeft size={18} /> Volver
          </button>

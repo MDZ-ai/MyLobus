@@ -100,7 +100,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     <div className="h-full flex flex-col bg-white animate-enter relative overflow-hidden">
       
       {/* Top Banner Style */}
-      <div className="bg-lobus-primary h-[40%] rounded-b-[48px] relative flex flex-col items-center justify-center shadow-lg pb-8">
+      <div className="bg-lobus-primary h-[40%] rounded-b-[48px] relative flex flex-col items-center justify-center shadow-lg pb-8 pt-32">
           <div className="bg-white p-5 rounded-[24px] shadow-2xl mb-5 animate-pop">
                <BrandLogo className="w-24 h-24" />
           </div>

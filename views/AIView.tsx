@@ -37,7 +37,7 @@ const AIView: React.FC<AIViewProps> = ({ user }) => {
   }, [history]);
 
   return (
-    <div className="h-full flex flex-col p-6 pb-32 bg-lobus-bg">
+    <div className="h-full flex flex-col px-6 pt-28 pb-32 bg-lobus-bg">
       <header className="mb-6 mt-6 flex items-center gap-4">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-lobus-primary to-lobus-secondary flex items-center justify-center shadow-lg shadow-lobus-primary/20">
             <Sparkles className="text-white" size={24} />
